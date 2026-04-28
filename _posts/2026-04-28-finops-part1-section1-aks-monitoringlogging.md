@@ -3,32 +3,29 @@ title: "Go Big or Go Broke? FinOps Engineering Series - AKS Monitoring"
 date: 2026-04-28
 ---
 Climbing higher… and higher… and higher.
-How far?
-No, not that tower climb you saw on Netflix. That was impressive.
-This is our clients’ data ingestion.
-And it’s not slowing down.
+How far? 
+No, not talking about Alex Honnold climbing the tallest skyscraper in Taipei on Netflix. Although, that was impressive.
+This is our clients’ data ingestion within their environment.
 
 At first, it doesn’t make sense.
-Nothing major changed in the clusters. Workloads are steady. No big deployments. No sudden spikes in traffic.
+Nothing major changed in their AKS clusters. Workloads are steady. No big deployments. No sudden spikes in traffic.
 So we check compute.
 Node pools look fine. Autoscaling is behaving. No obvious waste.
 Nothing stands out.
 
-So now the question becomes simple.
-Why is this still going up?
+---
 
-This actually ties back to another change that had been happening.
-As part of moving away from the legacy monitoring agent and standardizing on Azure Monitor Agent (covered in my other post: [you’ll add title here]), Azure Policy was used to deploy AMA across client environments.
-That part made sense.
-Then, alongside that, Container Insights was enabled across AKS clusters at scale through an internal platform push.
+This actually ties back to another change that had been happening on an ongoing effort.
+As part of moving away from the legacy monitoring agent and standardizing on Azure Monitor Agent (Azure retirements, what keeps me employed..), Azure Policy was used to deploy AMA across client environments. (check out my other post, titled: Monitoring Should Be Working… Right?)
+
+Alongside that, Container Insights was enabled across AKS clusters at scale through an internal platform push.
 No real context around what that would mean from a data perspective.
-Just enabled.
+Just enabled for more observabilty for clients.
 
 At a glance, everything looks good.
 Policy is compliant. The agent is there. Monitoring is “enabled.”
-So we move on.
 
-Until we actually look at what’s being collected.
+Until we actually look deeper at what’s being collected.
 
 Container logs.
 Kubernetes events.
@@ -36,7 +33,7 @@ Performance metrics.
 Inventory data.
 Across all namespaces.
 Every minute.
-Everything.
+Everything. ALL DA TINGZZZ
 
 And that’s when it clicks.
 Nothing is broken.
@@ -44,10 +41,10 @@ It’s working exactly as configured.
 And that’s the problem.
 
 In busy clusters, that volume adds up quickly when everything is collected by default. 
-There was also no daily cap set on the workspace.
+There was also no daily cap set on the log analytics workspace.
 So ingestion just kept going.
 
-This is a real world example, and was caught by cost anlomy alerts.. credit requests make the organization treat this as a priority.. $ talks..
+This is a real world example, and was caught by our cost anamoly alerts.. and oh boy, credit requests make the organization treat this as a priority.. $ talks..
 So, what can we will look at to prevent more gray hairs form popping up..?
 
 We can start with Container Insights.
