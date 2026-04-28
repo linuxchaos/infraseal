@@ -3,23 +3,31 @@ title: "Monitoring Should Be Working… Right?"
 date: 2026-04-28
 ---
 Monitoring is one of those things that everyone assumes is working… until it isn’t.
-You deploy Azure Monitor Agent. (<- what does that even mean) Perhaps your team autmaes the full deployment of Azure Monitor agent and all it's dependancies (more on this later) with Azure Policy..
+
+Your team automated the full deployment of Azure Monitor agent and all it's dependancies (more on this later) with Azure Policy..
+
 Azure policy shows green. The Data Collection Rule is associated. Everything looks correct. So naturally, you move on.
-Then a few weeks go by, no alerts. Nice!!! Our production VMs are smooth babyyy.. err, wait, oof, this VM is maxed out on cpu..
-Why is there no alerts firing or why am I able to sleep at night, full 8 hours.. (why am I complaining about sleep) and not getting called for this issue!
+Then a few weeks go by, no alerts. Nice!!! "Our production VMs are smooth babyyy.. yea!!" err, wait, oof, this VM is maxed out on cpu..
+
+Why is there no alerts firing.. why am I able to sleep at night, full 8 hours.. (why am I complaining about sleep) and not getting called for this issue?!
+
 Then you start checking.. wait, I don't see anything in Log Analytics.
+
 Nothing.
 No heartbeat. No data. Just silence.
+
+
 At first, it doesn’t make sense. The extension is there. Policy is compliant. The DCR is attached. Isn’t that enough?
+
 You double check the policy. Still green.
 You check the DCR association. It’s there.
 You refresh Log Analytics again. Still nothing.
-And that’s usually the moment where something clicks.
-Policy said everything was good. But nothing is actually working... and, now I have two more grey hairs!!
+
+ ..and, now I have two more grey hairs!!
 
 Let’s back up for a second.
 
-At a high level, Azure Monitor Agent is made up of a few moving parts working together. The agent itself runs as an extension on the VM. 
+At a high level, Azure Monitor Agent is made up of a few moving parts working together. The agent itself runs as an extension on the VM.
 A Data Collection Rule defines what data should be collected and where it should be sent. 
 That rule is then linked to the VM through an association, which tells the agent which configuration to follow. 
 From there, the data is sent to a destination, most commonly a Log Analytics workspace, where it can be queried and used for monitoring and alerting.
@@ -29,10 +37,13 @@ That’s the full flow from the VM to usable data.
 Where Things Start Breaking Down
 It’s easy to assume that once Azure Policy (or human, err.. AI in future) deploys the AMA extension and the DCR is associated, the job is done.
 But that’s not really what’s happening.
+
 Policy deploys the Monitor extension, confirms the configuration exists, and then moves on. It’s not sitting there watching the extension install, waiting to see if it actually succeeds, or checking whether the agent is actively sending data.
-It deploys… and then it goes off to watch its favorite Japanese drama. (and I can't blame it, I have a lot of recommendations)
+
+It deploys… and then it goes off to watch its favorite Japanese drama. (and I can't blame it, I have a lot of recommendations for series)
+
 If the extension gets stuck in a transitioning state, fails silently, or never properly initializes, Policy doesn’t care. As far as it’s concerned, the resource is configured the way it was told to configure it.
-From a governance perspective, that’s fine. But it doesn't mean anything if mointoring isn't working.
+
 
 The False Sense of “Everything Is Fine”
 This is where engineers can get tripped up.
@@ -51,6 +62,7 @@ Is the agent sending data? Did we verify and test if the agent is consuming the 
 If there’s no heartbeat in Log Analytics, then monitoring is not working. It doesn’t matter how green everything looks elsewhere.
 
 The Moment You Start Asking Better Questions
+
 This is usually where the troubleshooting shifts from “what’s deployed” to “what’s actually happening.”
 Why isn’t there a heartbeat?
 Is the extension actually healthy, or just present?
