@@ -1,155 +1,101 @@
 ---
-title: "FinOps Engineering Series - Hidden Cost Levers in AKS and Azure Monitoring"
+title: "Go Big or Go Broke? FinOps Engineering Series - AKS Monitoring"
 date: 2026-04-28
 ---
-Most cost optimization discussions around AKS focus on compute. Node sizing, autoscaling, Spot instances, and reservations are all valid areas to review.
+Climbing higher… and higher… and higher.
+How far?
+No, not that tower climb you saw on Netflix. That was impressive.
+This is our clients’ data ingestion.
+And it’s not slowing down.
 
-Alongside that, there are other areas that can contribute to cost over time, especially around monitoring and logging.
+At first, it doesn’t make sense.
+Nothing major changed in the clusters. Workloads are steady. No big deployments. No sudden spikes in traffic.
+So we check compute.
+Node pools look fine. Autoscaling is behaving. No obvious waste.
+Nothing stands out.
 
-Services like Container Insights, Log Analytics, and Diagnostic Settings are often enabled early and left as-is. Over time, they can collect more data than is actually needed.
+So now the question becomes simple.
+Why is this still going up?
 
-This post walks through a few configurations engineers can review and adjust based on their environment, goals, and use case.
+This actually ties back to another change that had been happening.
+As part of moving away from the legacy monitoring agent and standardizing on Azure Monitor Agent (covered in my other post: [you’ll add title here]), Azure Policy was used to deploy AMA across client environments.
+That part made sense.
+Then, alongside that, Container Insights was enabled across AKS clusters at scale through an internal platform push.
+No real context around what that would mean from a data perspective.
+Just enabled.
 
-1. Container Insights v2 - Basic Logs tier
+At a glance, everything looks good.
+Policy is compliant. The agent is there. Monitoring is “enabled.”
+So we move on.
 
-Container Insights sends AKS logs to Log Analytics, with container logs stored in the ContainerLogV2 table. This table supports the Basic Logs tier.
+Until we actually look at what’s being collected.
 
-Basic Logs reduces ingestion cost compared to the Analytics tier, which can make a noticeable difference in environments with a lot of container log volume.
+Container logs.
+Kubernetes events.
+Performance metrics.
+Inventory data.
+Across all namespaces.
+Every minute.
+Everything.
 
-This tends to make the most sense when logs are mainly used for troubleshooting or occasional investigation, not constant querying.
+And that’s when it clicks.
+Nothing is broken.
+It’s working exactly as configured.
+And that’s the problem.
 
-There is a tradeoff. Basic Logs charges for queries based on the amount of data scanned. So ingestion cost is lower, but query cost becomes usage-based.
+In busy clusters, that volume adds up quickly when everything is collected by default. 
+There was also no daily cap set on the workspace.
+So ingestion just kept going.
 
-For environments where logs are not queried frequently, this can still result in lower overall cost.
+This is a real world example, and was caught by cost anlomy alerts.. credit requests make the organization treat this as a priority.. $ talks..
+So, what can we will look at to prevent more gray hairs form popping up..?
 
-2. Container Insights presets
+We can start with Container Insights.
+By default, container logs are sent to Log Analytics using the Analytics tier. In containerlogsV2, there's an option to set the tier to Basic logs. If logs are mainly used for troubleshooting and not constant querying, this can reduce ingestion cost, with the tradeoff that queries become usage-based.
 
-Container Insights includes presets that control what data is collected and how often it is collected.
+Container Insights has a few different collection presets that control how much data is collected and how often. Common options include Logs and Events, Standard, Cost-optimized, and Custom. The default can provide broad visibility, but it may also collect more than what is actually needed for the environment.
 
-Common options include Logs and Events (default), Standard, Cost-optimized, and Custom.
+The Cost-optimized preset can be a good starting point because it increases the collection interval and excludes certain system namespaces. It does not remove monitoring completely. It just reduces how much data is collected by default. 
 
-The cost-optimized preset increases the collection interval and excludes certain system namespaces. It doesn’t remove monitoring, it just adjusts how much data is collected by default.
-
-This can be a good starting point depending on how active the cluster is and what visibility is actually needed.
-
-3. Namespace filtering
-
+Next is namespaces.
 Not every namespace needs to be logged.
 
-In most clusters, there are namespaces that generate a large amount of logs but are rarely used during troubleshooting. This often includes monitoring tools, operators, and system workloads.
+In most clusters, there are namespaces that generate a large amount of logs but are rarely used during troubleshooting. This can include monitoring tools, operators, and system workloads.
 
-Container Insights supports namespace filtering through its log collection configuration (the DCR/config-based setup in Azure documentation).
+Container Insights supports namespace filtering through its log collection configuration. Instead of collecting logs across everything, we can narrow it down by including only specific namespaces or excluding high-volume namespaces that do not provide much value day to day.
 
-Instead of collecting logs across everything, you can narrow it down. That might mean including only specific namespaces, or excluding the ones that are known to be high-volume and not useful.
+That directly reduces how much data gets sent to Log Analytics.
 
-This directly reduces the amount of data being sent to Log Analytics.
-
-4. Collection interval
-
-Container Insights collects data every 1 minute by default, but this can be adjusted up to 30 minutes.
-
+Then there’s collection frequency.
+Container Insights collects data every 1 minute by default, but that interval can be increased up to 30 minutes.
 That default is not always needed.
 
-If 1-minute granularity isn’t required, increasing the interval reduces ingestion volume while still providing enough visibility for most scenarios.
+If the environment does not need near real-time visibility, increasing the interval can reduce ingestion while still providing enough operational data for most scenarios
 
-This is a simple setting that can be adjusted without impacting most operational workflows.
 
-5. Log Analytics daily cap
+Outside of Container Insights, we also look at the workspace itself.
+Log Analytics supports a daily ingestion cap. Once the cap is reached, ingestion stops for the rest of the day. This can help protect against unexpected spikes, misconfigured logging, or sudden increases in data volume.
 
-Log Analytics supports a daily ingestion cap. Once the cap is reached, ingestion stops for the rest of the day.
+It should be treated as a safeguard, not the main cost optimization strategy. If the cap is hit, logs will not be collected again until the next day.
 
-This helps protect against unexpected spikes, misconfigured logging, or sudden increases in data volume.
 
-It should be treated as a safeguard. It’s often overlooked, but it can prevent unexpected cost spikes when something changes in the environment.
+Log Analytics workspaces have configurable retention, and this is often left at the default. If data does not need to be retained that long, reducing retention can lower storage cost.
 
-Just keep in mind that once the cap is hit, logs won’t be collected again until the next day.
+If long-term retention is required, exporting logs to Azure Storage may be more cost-effective than keeping everything in Log Analytics.
 
-6. Diagnostic Settings review
+Then we step back and look across the environment.
+Diagnostic Settings are often enabled across services early on. Over time, not all of those logs are actually used. Reviewing and trimming those down helps reduce unnecessary data collection while still meeting requirements. 
 
-Azure resources use Diagnostic Settings to send logs to destinations such as Log Analytics, Storage, or Event Hub.
+Over time, ingestion comes down.
+Visibility is still there.
+But now it actually reflects how the environment is being used.
 
-A common pattern is enabling all available log categories during setup. Over time, only some of those logs are actually used, while the rest continue to be ingested.
+That’s really the takeaway.
+AKS monitoring isn’t just something we enable and forget.
+It’s something we need to understand.
 
-Reviewing Diagnostic Settings across services can help identify where data is being collected but not used. This isn’t just for AKS, but across other Azure services as well.
 
-Adjust or disable what isn’t needed, while still making sure compliance and security requirements are met.
+Because if we go all in by default, it will work.
+But it will also cost you.
 
-7. Long-term log storage
-
-For long-term retention, Azure Storage can be more cost-effective than keeping logs in Log Analytics.
-
-Storage tiers include Hot, Cool, Cold, and Archive. Lifecycle rules can move data between tiers over time.
-
-Each tier has minimum retention periods. Cool is around 30 days, Cold around 90 days, and Archive around 180 days.
-
-If data is moved or deleted earlier than those timeframes, charges still apply based on the minimum duration.
-
-Tiering works best when retention requirements actually align with those durations. I will have a separate blog post just on storage tiers.
-
-8. AKS configuration decisions
-
-These settings are often defined during deployment and not revisited.
-
-Cluster management tiers
-
-AKS offers Free, Standard, and Premium.
-
-The difference is control plane SLA.
-
-If SLA is not required, the Free tier can reduce cost. Note: I have seen production clusters within client environments that are on the Free tier. I’ve never seen them go down.
-
-If the risks are evaluated, and the workloads running on the clusters are capable of withstanding downtime for whatever reason, the Free tier without the SLA may be a worthy tradeoff.
-
-Azure Advisor will scream at you, but the real yelling that matters is from the customers and users.
-
-Stop/start clusters
-
-AKS clusters can be stopped and started.
-
-When stopped, nodes are deallocated, compute cost is reduced, and the cluster state is preserved.
-
-This can be useful for clusters that do not need to run continuously.
-
-One consideration is that in capacity-constrained regions, restarting may be delayed if capacity is not available.
-
-This should be evaluated before using it in critical environments.
-
-Additional: Log Analytics data retention
-
-Log Analytics workspaces allow data retention to be configured, and this is often left at the default.
-
-Default retention is usually around 30 days, but it can be adjusted based on actual needs.
-
-If data does not need to be retained that long, reducing retention lowers storage cost.
-
-If long-term retention is required, exporting logs to Storage may be more cost-effective than keeping everything in Log Analytics.
-
-This is one of those settings that’s easy to overlook.
-
-Real-world example: Container Insights via Azure Policy
-
-One situation that stood out was when Container Insights was enabled across AKS clusters through an Azure Policy deployed by an internal platform team.
-
-There wasn’t much context provided ahead of time around what that change would mean from a data or cost perspective.
-
-After it was applied, a handful of clients started seeing their Log Analytics ingestion increase, and in some cases it was a pretty noticeable spike.
-
-Looking into it, the behavior made sense. Container Insights was now collecting container logs, Kubernetes events, performance data, and inventory across active clusters. In busy clusters, that volume adds up quickly when everything is collected by default.
-
-There also wasn’t a Log Analytics daily cap set at the time, so ingestion just kept going.
-
-Our cost anomaly detection picked it up, and both internal teams and the client were alerted.
-
-From there, we worked through stabilizing things. Container Insights configuration was adjusted, namespace filtering was implemented, and collection settings were tuned to better match how the clusters were actually being used. A daily cap was also added to the workspace as a safeguard going forward.
-
-A credit request was submitted due to the unexpected cost increase, and it was approved.
-
-After tuning, the required visibility was still there, but ingestion volume was reduced. It also led to better internal processes around communicating changes like this, especially when deploying through policy or automation across multiple environments.
-
-In closing,
-
-Cost optimization in AKS environments includes more than compute.
-
-Monitoring and logging configurations should also be reviewed periodically, including log tiers, collection intervals, namespace filtering, diagnostic settings, and retention policies.
-
-These settings can be adjusted based on the environment and how it’s actually being used, helping reduce unnecessary data collection while maintaining the visibility needed to operate effectively.
+Go big or go broke?
