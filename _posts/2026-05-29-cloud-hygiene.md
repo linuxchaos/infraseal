@@ -50,7 +50,7 @@ There were also two pairs of VMs acting as file servers. These systems were tied
 
 Before making changes, we needed to document how users authenticated, what DFS paths were being used, and whether any of those paths would need to change during migration.
 
-https://learn.microsoft.com/en-us/windows-server/storage/dfs-namespaces/dfs-overview?tabs=server-manager
+<https://learn.microsoft.com/en-us/windows-server/storage/dfs-namespaces/dfs-overview?tabs=server-manager>
 
 ## Active Directory Considerations
 
@@ -60,11 +60,11 @@ We spent time researching the differences between the existing Windows Server 20
 
 Based on the documentation below, Windows Server 2022 Domain Controllers could coexist with a Windows Server 2012 R2 forest.
 
-https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/active-directory-functional-levels#windows-server-2012-r2-functional-levels
+<https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/active-directory-functional-levels#windows-server-2012-r2-functional-levels>
 
-https://learn.microsoft.com/en-us/answers/questions/1609978/upgrading-moving-the-ad-server-from-2012-r2-datace
+<https://learn.microsoft.com/en-us/answers/questions/1609978/upgrading-moving-the-ad-server-from-2012-r2-datace>
 
-https://learn.microsoft.com/en-us/answers/questions/1858256/can-i-have-a-mix-of-server-2008-2012-and-server-20
+<https://learn.microsoft.com/en-us/answers/questions/1858256/can-i-have-a-mix-of-server-2008-2012-and-server-20>
 
 However, there were still important considerations.
 
@@ -75,9 +75,9 @@ For example:
 * Planning FSMO role transfers
 * Verifying application dependencies before introducing new Domain Controllers
 
-https://serverfault.com/questions/1147588/replacing-domain-controller-with-server-2022
+<https://serverfault.com/questions/1147588/replacing-domain-controller-with-server-2022>
 
-https://learn.microsoft.com/en-us/windows-server/storage/dfs-replication/migrate-sysvol-to-dfsr
+<https://learn.microsoft.com/en-us/windows-server/storage/dfs-replication/migrate-sysvol-to-dfsr>
 
 These details may seem small individually, but they become important when multiple upgrade projects are occurring simultaneously.
 
@@ -127,7 +127,7 @@ The rebuilt systems also gave us an opportunity to validate portions of the unma
 
 Retirement announcements can be tracked here:
 
-https://azure.microsoft.com/en-us/updates?filters=%5B%22Retirements%22%5D
+<https://azure.microsoft.com/en-us/updates?filters=%5B%22Retirements%22%5D>
 
 ## Why Cloud Hygiene Is More Than Recommendations
 
@@ -149,8 +149,8 @@ It's understanding how to address them in a way that works for the environment, 
 
 Some of the tools I use during environment reviews include:
 
-https://github.com/dolevshor/azure-orphan-resources
+<https://github.com/dolevshor/azure-orphan-resources>
 
-https://learn.microsoft.com/en-us/azure/advisor/advisor-workbook-service-retirement
+<https://learn.microsoft.com/en-us/azure/advisor/advisor-workbook-service-retirement>
 
-https://github.com/mathijsvermaat/Defender-AMA-coverage/blob/main/Defender_vs_AMA.json
+<https://github.com/mathijsvermaat/Defender-AMA-coverage/blob/main/Defender_vs_AMA.json>
