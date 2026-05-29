@@ -42,7 +42,7 @@ Upgrading VMs to a supported operating system version introduced several additio
 
 The VMs were running in Availability Sets. If we wanted to migrate them from unmanaged disks to managed disks, we also needed to evaluate the Availability Set configuration.
 
-https://learn.microsoft.com/en-us/azure/virtual-machines/windows/convert-unmanaged-to-managed-disks
+<https://learn.microsoft.com/en-us/azure/virtual-machines/windows/convert-unmanaged-to-managed-disks>
 
 Some VMs were able to move forward immediately, while others had dependencies that prevented us from doing so.
 
