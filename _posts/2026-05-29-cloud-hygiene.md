@@ -3,120 +3,154 @@ title: "Cloud Hygiene for client environments"
 date: 2026-05-29
 ---
 
-It's important to review and improve the overall health and hygiene of the cloud environment. With Azure, services retire and deprecate throughout their lifecycle.
+It's important to review and improve the overall health and hygiene of cloud environments. With Azure, services retire, operating systems reach end of support, and platform requirements change over time.
 
-I would like to share a real world example of this which led to an internal initiaive.
+I would like to share a real-world example of this which ultimately led to an internal initiative.
 
-We support a range of client environments, some are built from the ground
-up (greenfield), and many others already have an existing environment in which we take over and provide support. We are starting on the back foot with many. 
+We support a range of client environments. Some are built from the ground up, while many others are existing environments that we inherit and support. In many cases, we are starting on the back foot.
 
-I led a larger effort to provide a sustainable way for our engineering teams to assess and improve our clients' environments.
+I led a larger effort to provide a sustainable way for our engineering teams to assess and improve our clients' environments. A large portion of that process was created organically while working through a client engagement.
 
-A large portion of the process was created, by working with a client of ours organically. 
+## The Environment Review
 
-Startd during discussions of doing a review of a clients Azure environment. I provided my findings when I engaged the client and shared my report on key items that needed attention. The client was happy to get going and
-improve their environment.
+The work started during discussions around performing a health review of a client's Azure environment.
 
-There were multiple services and resources within their Azure environment that were
-retiring/deprecating within a years time. I led the overall project dedicated to getting their
-environment in a healthy state. This would require coordination with multiple teams with multiple
-projects tied together..
+I provided my findings and shared a report covering several areas that required attention. The client was eager to improve the environment and begin addressing the findings.
 
-This involved multiple meetings and discussion that spanned throughout the year.
+What initially appeared to be a straightforward environment review quickly turned into multiple interconnected projects.
 
-A few examples:
-VMs use unmanaged disks.
-IPs are in a sku that will be deprecated.
-Load balancers are in a sku that will be retired.
-The client would like to opt for a different load balancing solution.
-Their storage accounts (and applications interacting with the storage account) are using an
-outdated version which Azure will be removing.
-Their VMs are on an EOL version, and some are getting there. Their domain controllers will be
-on an unsupported version very soon, needing Active Directory/Domain controller migration..
+There were several services and resources within the Azure environment that were approaching retirement or deprecation within the next year. At the same time, the client was preparing for a compliance audit and planning upgrades to their firewall infrastructure.
 
-Among other things..
+A few examples included:
 
-This involved careful planning, research, and testing, on how to get their services on supported
-versions, or how to move/migrate them off. And the timeline for addressing each item. They also
-had an audit coming up for compliance that they were trying to pass. As well as upgrading their
-firewall appliance.
+* VMs using unmanaged disks
+* Public IPs running on a retiring SKU
+* Load Balancers running on a retiring SKU
+* Storage accounts and applications using an API version Azure would eventually remove
+* Domain Controllers approaching end of support
+* Application servers approaching end of support
 
-For example, upgrading their VMs to a new supported OS version, involved a lot of things.
-Firstly, their VMs are in availability sets, and if you want to migrate the VMs to get onto managed
-disk, you would need to upgrade the availability set as well. 
+Among other items.
+
+None of these recommendations could be evaluated independently. Many of them affected one another, which required careful planning around priorities, timelines, dependencies, testing, and maintenance windows.
+
+## Retirement and Upgrade Planning
+
+This involved multiple meetings and discussions throughout the year.
+
+Upgrading VMs to a supported operating system version introduced several additional considerations.
+
+The VMs were running in Availability Sets. If we wanted to migrate them from unmanaged disks to managed disks, we also needed to evaluate the Availability Set configuration.
+
 https://learn.microsoft.com/en-us/azure/virtual-machines/windows/convert-unmanaged-to-managed-disks
 
-Some VMs were able to do this, while others had to wait. 
+Some VMs were able to move forward immediately, while others had dependencies that prevented us from doing so.
 
-There were two pairs of VMs that were being used as file servers, however
-they were tied to the DCs/AD. So, we needed to document what the url /path will be when
-authenticated and mounted, and if it needed to be updated. 
+There were also two pairs of VMs acting as file servers. These systems were tied closely to Active Directory and DFS namespaces.
+
+Before making changes, we needed to document how users authenticated, what DFS paths were being used, and whether any of those paths would need to change during migration.
+
 https://learn.microsoft.com/en-us/windows-server/storage/dfs-namespaces/dfs-overview?tabs=server-manager
 
-Speaking of DCs, had to research the differences of the forest structure between 2012r and 2022.
+## Active Directory Considerations
 
-Looking at the following docs, it appears that 2022 is compatible with 2012r forest:
+The Domain Controllers introduced another layer of planning.
+
+We spent time researching the differences between the existing Windows Server 2012 R2 environment and the planned Windows Server 2022 deployment.
+
+Based on the documentation below, Windows Server 2022 Domain Controllers could coexist with a Windows Server 2012 R2 forest.
 
 https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/active-directory-functional-levels#windows-server-2012-r2-functional-levels
+
 https://learn.microsoft.com/en-us/answers/questions/1609978/upgrading-moving-the-ad-server-from-2012-r2-datace
+
 https://learn.microsoft.com/en-us/answers/questions/1858256/can-i-have-a-mix-of-server-2008-2012-and-server-20
 
-There are some considerations, for example, making sure to migrate SYSVOL from FRS to DFSR.
+However, there were still important considerations.
+
+For example:
+
+* Ensuring SYSVOL replication had been migrated from FRS to DFSR
+* Validating replication health
+* Planning FSMO role transfers
+* Verifying application dependencies before introducing new Domain Controllers
 
 https://serverfault.com/questions/1147588/replacing-domain-controller-with-server-2022
+
 https://learn.microsoft.com/en-us/windows-server/storage/dfs-replication/migrate-sysvol-to-dfsr
 
-(e.g.making sure FSMO roles are moved to new DCs.)
+These details may seem small individually, but they become important when multiple upgrade projects are occurring simultaneously.
 
-The size of the VMs disks can also play a factor in how long it will take to upgrade to managed disks. 
+## The Managed Disk Decision
 
-A lot of technical nuance like this occurred during the upgrades and migration for their resources.
+The size of the VM disks also played a role in planning.
 
-We made a game plan after as much research and testing, to group VMs together and do a
-“phased” approach. This meant something like:
-DC VMs first, then test the file servers, then prod/application servers, etc.
-The VMs needed to be redeployed as a new VM, in place upgrades usually break within Azure.
-So for the ones that needed OS upgrade as well, that would alter some of the instructions and
-processes.
+Larger disks meant longer migration windows. Some workloads were better candidates for a rebuild, while others were better candidates for an in-place migration to managed disks.
 
-The client and I needed to make tradeoff decisions.\
+After extensive research and testing, we created a phased approach.
 
-For example, the unmanaged disk retirement was going to take effect before the unsupported
-OS version work can be followed through completely. So, would we rebuild the VMs that way it
-gets on a supported OS version, and also have managed disk by default? Or, do we worry
-about getting the VMs on managed disks, then later worry about the unsupported version?
+The plan looked something like:
 
-It came down to real world situations. The clients development team needed to have enough
-time to get their workloads running on the new VMs, if we went the rebuild route. That will take
-longer than just upgrading the disks from unmanaged to managed. But, it will kill two birds with
-one stone. (I don’t like this phrase, I like birds).
+1. Domain Controllers
+2. File Servers
+3. Test Servers
+4. Production Application Servers
 
-We made the decision to rebuild the VMs we know the developers were able to get their
-workloads on quickly before the unmanaged disks retirement date. The others, we opted to do
-the unmanaged disk upgrade first. The few VMs we were able to do rebuild, we kept the old
-VMs to test the unmanaged migration steps.
+The order mattered because many of the systems depended on one another.
 
-Side note: At the last possible second, Microsoft Azure pulled back the retirement date to a later
-time.. This would have been nice to know ahead of time so we didn’t spend needless time
-making the tradeoff decisions, but Microsoft overlords have the final say..
+The client and I ultimately needed to make tradeoff decisions.
 
-A doc on retirement announcements:
+One example was the unmanaged disk retirement timeline.
+
+We had two possible approaches:
+
+* Rebuild the VM on a supported operating system and automatically land on managed disks.
+* Migrate the existing VM to managed disks first and address the unsupported operating system later.
+
+The first option solved multiple problems at once. However, it required application owners and developers to validate their workloads on rebuilt systems.
+
+The second option was quicker but would leave additional work for later.
+
+This is where cloud hygiene becomes more than simply implementing a recommendation.
+
+The client's development teams needed enough time to validate their applications. Some workloads could be rebuilt before the retirement deadline. Others could not.
+
+We decided to rebuild the VMs where application validation could be completed in time. For the remaining systems, we performed the unmanaged disk migration first and scheduled the operating system upgrades separately.
+
+The rebuilt systems also gave us an opportunity to validate portions of the unmanaged disk migration process before performing larger migrations.
+
+> Note:
+>
+> Near the end of the project, Microsoft extended the unmanaged disk retirement timeline.
+>
+> While the additional time was helpful, much of the planning, testing, prioritization, and decision-making had already been completed.
+
+Retirement announcements can be tracked here:
+
 https://azure.microsoft.com/en-us/updates?filters=%5B%22Retirements%22%5D
 
+## Why Cloud Hygiene Is More Than Recommendations
 
-I give this example, because throughout each phase and different upgrades/migration projects,
-nuanced discussion and understanding the clients needs throughout (both business needs but
-also technical requirements) adjusted the way we approached the work done, the teams
-needing to be involved, the criteria for success, and completed the projects.
+I share this example because cloud hygiene is about more than identifying recommendations.
 
-Coordinating between the various teams is crucial because of the step by step phases and working relationship
-with the client on their needs and environment holistic view. All the projects were integrated in
-some way. If a project was completed before a scheduled maintenance, or changes were made
-without knowing about the other work being performed, it could take down the live production
-systems.
+Throughout each phase of this work, understanding the client's business needs, technical requirements, project timelines, compliance goals, and operational constraints influenced how the work was approached.
 
-These are some of the tools I use:
+The recommendations themselves were only one part of the process.
+
+Coordinating between teams was equally important. Many of the projects were connected in some way. If one project was completed without understanding the timing or impact of another, it could affect production systems or delay other work already in progress.
+
+The technical work mattered, but so did understanding how each change fit into the larger environment.
+
+Cloud hygiene is not simply finding issues.
+
+It's understanding how to address them in a way that works for the environment, the people supporting it, and the business relying on it.
+
+## Useful Tools
+
+Some of the tools I use during environment reviews include:
 
 https://github.com/dolevshor/azure-orphan-resources
+
 https://learn.microsoft.com/en-us/azure/advisor/advisor-workbook-service-retirement
+
 https://github.com/mathijsvermaat/Defender-AMA-coverage/blob/main/Defender_vs_AMA.json
