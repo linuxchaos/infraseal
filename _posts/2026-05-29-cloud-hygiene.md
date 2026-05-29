@@ -3,17 +3,18 @@ title: "Cloud Hygiene for client environments"
 date: 2026-05-29
 ---
 
-Retirement and Deprecation Program
+It's important to review and improve the overall health and hygiene of the cloud environment. With Azure, services retire and deprecate throughout their lifecycle.
 
-I would like to share a program, which dealt with, for a lack of better term,
-“unhealthy” client environments. We support a range of client environments, some are built from the ground
+I would like to share a real world example of this which led to an internal initiaive.
+
+We support a range of client environments, some are built from the ground
 up (greenfield), and many others already have an existing environment in which we take over and provide support. We are starting on the back foot with many. 
 
 I led a larger effort to provide a sustainable way for our engineering teams to assess and improve our clients' environments.
 
-A large portion of the process was created, by working with a client of ours organically. I
-provided my findings when I engaged the client to do a review of their environment. I showed
-them my report on key items that needed attention. The client was happy to get going and
+A large portion of the process was created, by working with a client of ours organically. 
+
+Startd during discussions of doing a review of a clients Azure environment. I provided my findings when I engaged the client and shared my report on key items that needed attention. The client was happy to get going and
 improve their environment.
 
 There were multiple services and resources within their Azure environment that were
@@ -31,7 +32,7 @@ The client would like to opt for a different load balancing solution.
 Their storage accounts (and applications interacting with the storage account) are using an
 outdated version which Azure will be removing.
 Their VMs are on an EOL version, and some are getting there. Their domain controllers will be
-on an unsupported version very soon, needing Active Directory/Domain controller migration.
+on an unsupported version very soon, needing Active Directory/Domain controller migration..
 
 Among other things..
 
@@ -45,8 +46,9 @@ Firstly, their VMs are in availability sets, and if you want to migrate the VMs 
 disk, you would need to upgrade the availability set as well. 
 https://learn.microsoft.com/en-us/azure/virtual-machines/windows/convert-unmanaged-to-managed-disks
 
-Some VMs were able to do this,
-others had to wait. There were two pairs of VMs that were being used as file servers, however
+Some VMs were able to do this, while others had to wait. 
+
+There were two pairs of VMs that were being used as file servers, however
 they were tied to the DCs/AD. So, we needed to document what the url /path will be when
 authenticated and mounted, and if it needed to be updated. 
 https://learn.microsoft.com/en-us/windows-server/storage/dfs-namespaces/dfs-overview?tabs=server-manager
