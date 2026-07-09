@@ -1,4 +1,10 @@
 theme: minima
-title: linuxchaos's personal blog
-description: This is where I share cool Tech stuff and findings throughout my career
+title: Infraseal
+description: Practical notes on cloud engineering, infrastructure hygiene, monitoring, security, FinOps, and AI workload governance.
 author: linuxchaos
+
+header_pages:
+  - docs.md
+  - about.md
+
+show_excerpts: true

@@ -1,101 +1,59 @@
 ---
-title: "Monitoring *Should* Be Working… Right?"
+title: "Monitoring Should Be Working, Right?"
 date: 2026-04-28
 ---
-Monitoring is one of those things that everyone assumes is working… until it isn’t..
 
-**Scenario:**
+Monitoring is one of those areas where teams often assume everything is fine because the deployment looks fine.
 
-Your team automated the full deployment of Azure Monitor agent and all it's dependancies (*more on this later*) with Azure Policy..
+The policy is compliant. The agent extension exists. The Data Collection Rule is associated. The dashboard looks quiet, so it is easy to move on.
 
-Azure policy shows green. The Data Collection Rule is associated. Everything looks correct. So naturally, you move on.
-Then a few weeks go by, no alerts..
+Then a VM starts running hot. CPU is high, disk space is low, and no alert fired. You open Log Analytics and realize the real issue: there is no data. No heartbeat. No useful signal. Just a monitoring setup that looked configured but was not actually working.
 
-Nice!!! "Our production VMs are *smooth* babyyy.. yea!!" -- said my inner thoughts
+## How the Flow Is Supposed to Work
 
-err, **wait**, *oof*, this VM is maxed out on cpu.. and disk space, ***rip***..
+At a high level, Azure Monitor Agent depends on a few pieces working together.
 
-Why is there no alerts firing.. why am I able to sleep at night, full 8 hours.. (*why am I complaining about sleep*) and not getting called for this issue?!
+The agent runs as an extension on the VM. A Data Collection Rule defines what data should be collected and where it should be sent. That rule is linked to the VM through a Data Collection Rule Association. From there, the data is sent to a destination, usually a Log Analytics workspace, where it can be queried and used for alerts, dashboards, and investigation.
 
-Then you start checking.. wait, I don't see anything in Log Analytics.
+That is the full path from the VM to usable monitoring data.
 
-Nothing.
-No heartbeat. No data. Just silence.
+If any part of that path is present but not healthy, monitoring can fail quietly.
 
+## Where Things Break Down
 
-You double check the policy. Still green.
-You check the DCR association. It’s there.
-You refresh Log Analytics again. Still nothing.
+Azure Policy is useful for deploying and enforcing configuration at scale. Runtime health still needs separate validation.
 
- ..and, now I have two more *grey* hairs!!
+Policy can confirm that the extension exists. It can confirm that an association exists. It can report that the resource matches the desired configuration. The remaining work is to prove that the agent installed cleanly, initialized correctly, can reach the ingestion endpoint, and is actively sending data.
 
----
+If the extension is stuck, failed, blocked by network rules, missing identity permissions, or misconfigured in a way that stops data flow, the environment can still look compliant from the policy view.
 
-Let’s back up for a second.
+That same lesson applies outside Azure Policy. An engineer can deploy the right components manually and still miss the operational proof that those components are working together.
 
-At a high level, Azure Monitor Agent is made up of a few moving parts working together. The agent itself runs as an extension on the VM.
-A Data Collection Rule defines what data should be collected and where it should be sent. 
-That rule is then linked to the VM through an association, which tells the agent which configuration to follow. 
-From there, the data is sent to a destination, most commonly a Log Analytics workspace, where it can be queried and used for monitoring and alerting.
+## The Signal That Matters
 
-That’s the full flow from the VM to usable data.
+The better question is "what proves monitoring is working?"
 
----
+For Azure Monitor Agent, that proof usually starts with the heartbeat and expected data in Log Analytics. If the VM is not sending data, the rest of the configuration is only part of the story.
 
-**Where Things Start Breaking Down**
-It’s easy to assume that once Azure Policy (or human, err.. AI in future) deploys the AMA extension and the DCR is associated, the job is done.
-But..
+The checks should include questions like:
 
-Policy deploys the Monitor extension, confirms the configuration exists, and then **moves on**. It’s not sitting there watching the extension install, waiting to see if it actually succeeds, or checking whether the agent is actively sending data. If the extension exists, it marks as **compliant**.
+- Is the agent extension healthy, or only present?
+- Did the extension fully install?
+- Is the VM able to reach the required ingestion endpoints?
+- Is the Data Collection Rule collecting what we expect?
+- Is the association linked to the right resource?
+- Is identity configured correctly?
+- Are expected logs and metrics visible in the workspace?
+- Are alerts built on data that is actually arriving?
 
-It deploys… and then it goes off to watch its favorite Japanese drama. (and I can't blame it, I have a lot of recommendations for series)
+Those checks move the conversation from deployment status to operational confidence.
 
-If the extension gets stuck in a transitioning state, fails silently, or never properly initializes, Policy doesn’t care. As far as it’s concerned, the resource is configured the way it was told to configure it. 
-I'm focusing on Azure policy, but the same is tru for engineers deplying the monitor agent.
+## Define What Working Means
 
----
+As engineers, we need to define what working means for the environment.
 
-**The False Sense of “Everything Is Fine"**
-This is where engineers can get tripped up.
-You end up relying on signals that don’t actually represent the full picture:
+That should include the signals that prove monitoring is healthy, the signals that show something is broken, and the first places to check when data stops flowing. It should also be documented so the team is not rebuilding the same troubleshooting path during an outage.
 
-Policy compliance says “configured”, extension exists, DCRs look good, etc etc..
+The same idea applies to any platform component we deploy at scale.
 
-But none of those confirm that monitoring is actually functioning.
-
-The real signal is simple:
-Is the agent sending data? Did we verify and test if the agent is consuming the data? 
-If there’s no heartbeat in Log Analytics, then monitoring is not working. It doesn’t matter how green everything looks elsewhere.
-
----
-
-**The Moment You Start Asking Better Questions**
-
-Why isn’t there a heartbeat?
-Is the extension actually healthy, or just present?
-Did the extension fully install, or is it stuck?
-Is the VM able to reach the ingestion endpoint?
-Why is Ohtani so dang good at baseball?
-Is the DCR settings correct for what we expect to collect?
-Is identity configured properly?
-We're not just checking boxes anymore and now actually paying attention..
-
----
-
-As engineers, we should be defining what “working” looks like in the environment.
-Not just at a component level, but the whole shebang.
-What signals prove that monitoring is healthy?
-What signals indicate something is broken?
-What should you check first when data stops flowing?
-And most importantly, documenting that process so you’re not figuring it out again at 2 AM six months later.. 5 Dos Equis deep.. jk.
-
-**Final Thoughts**
-We can’t assume something is working just because it’s deployed or shows green.
-As engineers, we need to understand the full flow and have clear proof that it's actually doing what we intended. Not just for monitoring, but for any solution we put in place.
-
-***It should be working*** isn’t enough. We need to know that it is.
-Azure (or pick your cloud) gives you all the building blocks.
-But it doesn’t guarantee that those pieces are working together.
-That part is on us.
-Because at the end of the day, “configured” and “working” are not the same thing.
-And monitoring only matters when it’s actually working.
+Configured and working are not the same thing. Monitoring only matters when it is actually collecting the data needed to act.
