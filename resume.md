@@ -58,18 +58,6 @@ permalink: /resume/
 </section>
 
 <section class="resume-section">
-  <h2>Review and Onboarding Flow</h2>
-  <div class="resume-diagram" aria-label="Client environment review and onboarding flow">
-    <div class="diagram-step">Discovery</div>
-    <div class="diagram-step">Scan Findings</div>
-    <div class="diagram-step">Priority Plan</div>
-    <div class="diagram-step">Git and Terraform Setup</div>
-    <div class="diagram-step">Deploy and Install Agents</div>
-    <div class="diagram-step">Validate and Handoff</div>
-  </div>
-</section>
-
-<section class="resume-section">
   <h2>Selected Work</h2>
   <div class="resume-project-list">
     <article class="resume-project">
