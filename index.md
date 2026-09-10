@@ -16,6 +16,7 @@ The focus is on the work that happens inside real environments: understanding ho
 ## Start Here
 
 - [Docs and topic index]({{ "/docs/" | relative_url }})
+- [Resume and selected project work]({{ "/resume/" | relative_url }})
 - [About this site]({{ "/about/" | relative_url }})
 
 </section>

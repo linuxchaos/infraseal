@@ -5,6 +5,7 @@ author: linuxchaos
 
 header_pages:
   - docs.md
+  - resume.md
   - about.md
 
 show_excerpts: true

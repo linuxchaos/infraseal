@@ -109,3 +109,259 @@ pre code {
 .site-footer {
   color: #657277;
 }
+
+.resume-hero {
+  margin: 0 0 30px;
+  padding: 12px 0 28px;
+  border-bottom: 1px solid #d9e3df;
+}
+
+.resume-label {
+  margin: 0 0 8px;
+  color: #8a641c;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.resume-hero h1 {
+  margin: 0 0 12px;
+  color: #173f3b;
+  font-size: 42px;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+.resume-lede {
+  max-width: 780px;
+  margin: 0 0 20px;
+  color: #294247;
+  font-size: 20px;
+  line-height: 1.48;
+}
+
+.resume-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.resume-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 9px 15px;
+  border: 1px solid #b9c9c5;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #173f3b;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.resume-button:hover,
+.resume-button:focus {
+  border-color: #0f6b62;
+  color: #0f6b62;
+}
+
+.resume-button-primary {
+  border-color: #0f6b62;
+  background: #0f6b62;
+  color: #ffffff;
+}
+
+.resume-button-primary:hover,
+.resume-button-primary:focus {
+  background: #173f3b;
+  color: #ffffff;
+}
+
+.resume-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 32px;
+}
+
+.resume-stat {
+  min-height: 116px;
+  padding: 16px;
+  border: 1px solid #d9e3df;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.resume-stat strong {
+  display: block;
+  margin-bottom: 7px;
+  color: #0f6b62;
+  font-size: 27px;
+  line-height: 1.1;
+}
+
+.resume-stat span {
+  display: block;
+  color: #415155;
+  font-size: 14px;
+  line-height: 1.42;
+}
+
+.resume-section {
+  margin: 36px 0 0;
+}
+
+.resume-section h2 {
+  margin: 0 0 14px;
+  color: #173f3b;
+  font-size: 25px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.resume-section p {
+  color: #294247;
+}
+
+.resume-service-grid,
+.resume-project-list {
+  display: grid;
+  gap: 14px;
+}
+
+.resume-service-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.resume-card,
+.resume-project {
+  border: 1px solid #d9e3df;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.resume-card {
+  min-height: 168px;
+  padding: 18px;
+}
+
+.resume-card h3,
+.resume-project h3,
+.resume-timeline h3 {
+  margin: 0 0 8px;
+  color: #173f3b;
+  font-size: 20px;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+
+.resume-card p,
+.resume-project p,
+.resume-project li,
+.resume-timeline p {
+  font-size: 16px;
+  line-height: 1.58;
+}
+
+.resume-diagram {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.diagram-step {
+  min-height: 96px;
+  padding: 14px 12px;
+  border: 1px solid #c7d8d4;
+  border-top: 4px solid #d8a24a;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #173f3b;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.resume-project {
+  padding: 20px;
+  border-left: 5px solid #0f6b62;
+}
+
+.resume-project ul {
+  margin: 10px 0 12px 20px;
+}
+
+.resume-tags {
+  margin: 14px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid #e2e8e5;
+  color: #657277;
+  font-size: 14px;
+}
+
+.resume-timeline {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.resume-timeline article {
+  padding: 18px;
+  border: 1px solid #d9e3df;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.resume-timeline p {
+  margin: 5px 0;
+}
+
+.resume-cert-list {
+  columns: 2;
+  column-gap: 28px;
+}
+
+.resume-cert-list li {
+  break-inside: avoid;
+  margin-bottom: 6px;
+}
+
+@media screen and (max-width: 820px) {
+  .resume-hero h1 {
+    font-size: 34px;
+  }
+
+  .resume-lede {
+    font-size: 18px;
+  }
+
+  .resume-stats,
+  .resume-service-grid,
+  .resume-timeline {
+    grid-template-columns: 1fr;
+  }
+
+  .resume-diagram {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .resume-cert-list {
+    columns: 1;
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .resume-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .resume-button {
+    width: 100%;
+  }
+
+  .resume-diagram {
+    grid-template-columns: 1fr;
+  }
+}

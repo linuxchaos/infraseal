@@ -6,6 +6,10 @@ permalink: /docs/
 
 This page groups the posts by the kinds of work I usually come back to during client reviews, infrastructure planning, and operational cleanup.
 
+## Portfolio
+
+- [Resume and selected project work]({{ "/resume/" | relative_url }})
+
 ## Environment Reviews
 
 - [What I Look For Before Designing or Taking Over an Environment]({{ "/2026/07/09/client-environment-review-infrastructure-design.html" | relative_url }})
