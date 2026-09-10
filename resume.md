@@ -8,11 +8,6 @@ permalink: /resume/
   <p class="resume-label">Cloud security, customer engineering, and platform delivery</p>
   <h1>James Andrade</h1>
   <p class="resume-lede">Lead cloud/platform engineer focused on customer-facing cloud security, Kubernetes, Terraform, managed services, and professional services across AWS, Azure, and Google Cloud.</p>
-  <div class="resume-actions" aria-label="Resume downloads">
-    <a class="resume-button resume-button-primary" href="{{ '/assets/resume/James_Andrade_Cloud_Security_TAM_Resume.pdf' | relative_url }}">Download PDF</a>
-    <a class="resume-button" href="{{ '/assets/resume/James_Andrade_Cloud_Security_TAM_Resume.docx' | relative_url }}">Word</a>
-    <a class="resume-button" href="{{ '/assets/resume/James_Andrade_Cloud_Security_TAM_Resume.md' | relative_url }}">Markdown</a>
-  </div>
 </section>
 
 <section class="resume-stats" aria-label="Experience summary">

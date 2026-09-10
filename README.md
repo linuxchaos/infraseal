@@ -21,5 +21,4 @@ If the GitHub Pages gems are not installed locally, the site can still be edited
 - `resume.md` - resume and selected project portfolio page
 - `about.md` - short site overview
 - `_posts/` - blog posts
-- `assets/resume/` - resume downloads linked from the portfolio page
 - `assets/main.scss` - light theme customizations

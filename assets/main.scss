@@ -140,44 +140,6 @@ pre code {
   line-height: 1.48;
 }
 
-.resume-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.resume-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 42px;
-  padding: 9px 15px;
-  border: 1px solid #b9c9c5;
-  border-radius: 6px;
-  background: #ffffff;
-  color: #173f3b;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.resume-button:hover,
-.resume-button:focus {
-  border-color: #0f6b62;
-  color: #0f6b62;
-}
-
-.resume-button-primary {
-  border-color: #0f6b62;
-  background: #0f6b62;
-  color: #ffffff;
-}
-
-.resume-button-primary:hover,
-.resume-button-primary:focus {
-  background: #173f3b;
-  color: #ffffff;
-}
-
 .resume-stats {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -352,15 +314,6 @@ pre code {
 }
 
 @media screen and (max-width: 520px) {
-  .resume-actions {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
-
-  .resume-button {
-    width: 100%;
-  }
-
   .resume-diagram {
     grid-template-columns: 1fr;
   }
