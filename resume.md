@@ -7,7 +7,7 @@ permalink: /resume/
 <section class="resume-hero">
   <p class="resume-label">Cloud security, customer engineering, and platform delivery</p>
   <h1>James Andrade</h1>
-  <p class="resume-lede">Lead cloud/platform engineer focused on customer-facing cloud security, Kubernetes, Terraform, and managed-service delivery across AWS, Azure, and Google Cloud.</p>
+  <p class="resume-lede">Lead cloud/platform engineer focused on customer-facing cloud security, Kubernetes, Terraform, managed services, and professional services across AWS, Azure, and Google Cloud.</p>
   <div class="resume-actions" aria-label="Resume downloads">
     <a class="resume-button resume-button-primary" href="{{ '/assets/resume/James_Andrade_Cloud_Security_TAM_Resume.pdf' | relative_url }}">Download PDF</a>
     <a class="resume-button" href="{{ '/assets/resume/James_Andrade_Cloud_Security_TAM_Resume.docx' | relative_url }}">Word</a>
@@ -21,7 +21,7 @@ permalink: /resume/
     <span>managed cloud client accounts</span>
   </div>
   <div class="resume-stat">
-    <strong>40+</strong>
+    <strong>Dozens</strong>
     <span>client projects across AWS, Azure, GCP, and Kubernetes</span>
   </div>
   <div class="resume-stat">
@@ -29,14 +29,14 @@ permalink: /resume/
     <span>engineering effort reduced for client environment findings</span>
   </div>
   <div class="resume-stat">
-    <strong>$180K</strong>
-    <span>measurable 2025 value through automation and advisory work</span>
+    <strong>Client value</strong>
+    <span>automation, advisory work, lifecycle management, and platform cleanup</span>
   </div>
 </section>
 
 <section class="resume-section">
   <h2>Profile</h2>
-  <p>I design, deploy, secure, migrate, and troubleshoot cloud environments for clients that need their infrastructure to be understandable, supportable, and ready for production work. My day-to-day work spans discovery, architecture review, Terraform implementation, Kubernetes operations, security controls, monitoring, production incidents, validation, documentation, and handoff.</p>
+  <p>I design, deploy, secure, migrate, and troubleshoot cloud environments for clients that need their infrastructure to be understandable, supportable, and ready for production work. My day-to-day work spans managed services and professional services, from discovery meetings and architecture review through Terraform implementation, environment deployment, Kubernetes operations, security controls, monitoring, production incidents, validation, ongoing improvement, support, documentation, and handoff.</p>
   <p>I try to start with the environment before I start with a recommendation. That means understanding where the data is stored, how the application works, how users and engineers access it, what is already monitored, what is backed up, where security tools sit, what costs are trending, and what the client actually wants to solve first.</p>
 </section>
 
@@ -78,16 +78,6 @@ permalink: /resume/
   <h2>Selected Work</h2>
   <div class="resume-project-list">
     <article class="resume-project">
-      <h3>Client Environment Review Automation and Advisory Program</h3>
-      <p>Led an internal initiative to standardize recurring client environment reviews across security posture, reliability, backup coverage, access paths, logging, service lifecycle, orphaned resources, unattached disks, platform hygiene, and FinOps.</p>
-      <ul>
-        <li>Built automation that collected and organized findings so engineers could produce a client-ready review package in roughly 2 hours instead of about 40 hours of manual effort.</li>
-        <li>Used the reports with clients to align remediation priorities with their goals and decide which items needed attention first.</li>
-      </ul>
-      <p class="resume-tags">Automation, advisory delivery, security posture, FinOps, reporting, environment scans</p>
-    </article>
-
-    <article class="resume-project">
       <h3>Client Platform Onboarding and Automation Enablement</h3>
       <p>Onboarded client environments into automation and managed-service platforms, including backup coverage, policy baselines, Git repository linkage, Terraform code standards, environment deployments, and post-deployment validation.</p>
       <ul>
@@ -98,23 +88,13 @@ permalink: /resume/
     </article>
 
     <article class="resume-project">
-      <h3>Enterprise EKS Lifecycle and Upgrade Program</h3>
-      <p>Led staged EKS lifecycle upgrades across sandbox, development, stage, production, and shared environments, coordinating control plane, add-on, node group, AMI, and Launch Template changes through approved maintenance windows.</p>
+      <h3>Client Environment Review Automation and Advisory Program</h3>
+      <p>Led an internal initiative to standardize recurring client environment reviews across security posture, reliability, backup coverage, access paths, logging, service lifecycle, orphaned resources, unattached disks, platform hygiene, and FinOps.</p>
       <ul>
-        <li>Moved platforms through sequential Kubernetes versions with rolling node replacement, target group health checks, workload verification, and rollback planning.</li>
-        <li>Folded security remediation into lifecycle work by updating worker AMIs and EKS add-ons while reducing production risk through environment sequencing.</li>
+        <li>Built automation that collected and organized findings so engineers could produce a client-ready review package in roughly 2 hours instead of about 40 hours of manual effort.</li>
+        <li>Used the reports with clients to align remediation priorities with their goals and decide which items needed attention first.</li>
       </ul>
-      <p class="resume-tags">AWS EKS, Kubernetes, Launch Templates, AMIs, add-ons, change windows</p>
-    </article>
-
-    <article class="resume-project">
-      <h3>EKS Ingress and Gateway Fabric Migration</h3>
-      <p>Migrated legacy NGINX Ingress patterns toward NGINX Gateway Fabric in EKS environments where WAF inspection, oauth2-proxy authentication, header injection, routing, and annotations were tied to the older design.</p>
-      <ul>
-        <li>Retargeted NLB listeners to Gateway Fabric services and added Security Group rules for replacement NodePorts.</li>
-        <li>Validated node reachability, target health, authentication flows, and internal and external application routing.</li>
-      </ul>
-      <p class="resume-tags">NGINX Gateway Fabric, EKS, NLB, WAF, oauth2-proxy, Kubernetes services</p>
+      <p class="resume-tags">Automation, advisory delivery, security posture, FinOps, reporting, environment scans</p>
     </article>
 
     <article class="resume-project">
@@ -128,12 +108,40 @@ permalink: /resume/
     </article>
 
     <article class="resume-project">
+      <h3>Kubernetes (AKS) Lifecycle and Upgrade Process</h3>
+      <p>Led staged Kubernetes lifecycle and upgrade work across sandbox, development, stage, production, and shared environments, coordinating control plane, managed add-ons, node pools, images, and template changes through approved maintenance windows.</p>
+      <ul>
+        <li>Moved application platforms through sequential Kubernetes versions with rolling node replacement, health checks, load balancer validation, workload verification, and rollback planning.</li>
+        <li>Folded security remediation into lifecycle work by updating worker images and Kubernetes add-ons while reducing production risk through environment sequencing.</li>
+      </ul>
+      <p class="resume-tags">Kubernetes, AKS, node pools, images, add-ons, change windows</p>
+    </article>
+
+    <article class="resume-project">
+      <h3>Kubernetes Ingress and Security Policy Controls</h3>
+      <p>Supported Kubernetes ingress designs around routing, authentication, WAF placement, TLS, network reachability, and application validation without tying the design to one controller pattern.</p>
+      <ul>
+        <li>Built the AKS equivalent for ingress and security policy work, including private access, RBAC, Azure Policy, network controls, workload identity, monitoring signal flow, and policy validation.</li>
+      </ul>
+      <p class="resume-tags">Kubernetes, AKS, ingress, Azure Policy, RBAC, WAF, workload identity</p>
+    </article>
+
+    <article class="resume-project">
+      <h3>Kubernetes Platform Troubleshooting and Add-On Operations</h3>
+      <p>Troubleshot managed Kubernetes platform issues across add-ons, worker image updates, autoscaling behavior, ingress behavior, node pressure, pod placement, resource requests, and monitoring signal gaps.</p>
+      <ul>
+        <li>Used Datadog, Kubernetes events, node utilization, workload density, provisioning behavior, and add-on state to separate platform problems from application resource pressure.</li>
+      </ul>
+      <p class="resume-tags">Kubernetes, add-ons, autoscaling, node pressure, Datadog, workload troubleshooting</p>
+    </article>
+
+    <article class="resume-project">
       <h3>AWS Application Platform and Private Networking</h3>
-      <p>Designed and supported AWS application platforms using Route 53, CloudFront, ALB/NLB, ECS, EKS, EC2 Auto Scaling, private and public subnets, Security Groups, IAM, ECR, KMS, EBS, S3, CloudWatch, TLS certificates, and Terraform.</p>
+      <p>Designed and supported AWS application platforms using Route 53, CloudFront, ALB/NLB, ECS, managed Kubernetes workloads, EC2 Auto Scaling, private and public subnets, Security Groups, IAM, ECR, KMS, EBS, S3, CloudWatch, TLS certificates, and Terraform.</p>
       <ul>
         <li>Planned platform changes around DNS ownership, private networking, VPN and firewall paths, WAF placement, service segmentation, high availability, and production cutover ownership.</li>
       </ul>
-      <p class="resume-tags">AWS, Terraform, private networking, DNS, WAF, ALB, NLB, ECS, EKS</p>
+      <p class="resume-tags">AWS, Terraform, private networking, DNS, WAF, ALB, NLB, ECS, Kubernetes</p>
     </article>
 
     <article class="resume-project">
